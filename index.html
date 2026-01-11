@@ -18,11 +18,11 @@
         
         /* Animasi Konten */
         .tab-content {
-            animation: fadeIn 0.4s ease-out;
+            animation: fadeIn 0.3s ease-in-out;
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         /* Scrollbar Halus untuk container tab (mobile) */
@@ -74,6 +74,12 @@
         }
 
         iframe { display: block; }
+        
+        /* Wrapper khusus agar iframe bisa di-scroll di HP */
+        .iframe-scroll-wrapper {
+            -webkit-overflow-scrolling: touch;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
@@ -82,10 +88,10 @@
         
         <div class="container mx-auto px-4 pt-6 pb-4 flex flex-col items-center justify-center text-center relative">
             
-            <div class="mb-3">
+            <div class="mb-3 cursor-pointer group" onclick="switchTab('home')" title="Kembali ke Dashboard">
                 <img src="https://upload.wikimedia.org/wikipedia/id/1/11/Logo_USN_Kolaka.png" 
                      alt="Logo USN Kolaka" 
-                     class="h-16 md:h-20 w-auto object-contain drop-shadow-sm hover:scale-105 transition-transform duration-300">
+                     class="h-16 md:h-20 w-auto object-contain drop-shadow-sm group-hover:scale-110 transition-transform duration-300">
             </div>
 
             <p class="text-xs md:text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">
@@ -254,15 +260,14 @@
 
         <div id="unit1" class="tab-content hidden">
             <div class="grid lg:grid-cols-12 gap-6 h-auto lg:h-[80vh]">
-                
                 <div class="lg:col-span-8 flex flex-col h-full bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden min-h-[500px]">
                     <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
                         <h3 class="font-bold text-slate-700 flex items-center gap-2"><i class="ph ph-book-open text-blue-600"></i> Reading Material: Socializing</h3>
                         <a href="https://docs.google.com/document/d/1ltYX88_-THUkgvJ8W2YpEGgzoiHbQPE_0vpi9CSqAuQ/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline">Buka di Tab Baru</a>
                     </div>
-                    <div class="flex-1 bg-white relative">
+                    <div class="flex-1 bg-white relative iframe-scroll-wrapper">
                         <iframe src="https://docs.google.com/document/d/1ltYX88_-THUkgvJ8W2YpEGgzoiHbQPE_0vpi9CSqAuQ/preview" 
-                                class="w-full h-full border-0" 
+                                class="w-full h-full border-0 min-h-[500px]" 
                                 allow="autoplay">
                         </iframe>
                     </div>
@@ -317,8 +322,8 @@
                         <h3 class="font-bold text-slate-700 flex items-center gap-2"><i class="ph ph-book-open text-blue-600"></i> Reading Material: Family Life</h3>
                         <a href="https://docs.google.com/document/d/1UUTJ-31M1-SxbcM0nfAp29QumP0nxXjrFbs8RafGJpQ/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline">Buka di Tab Baru</a>
                     </div>
-                    <div class="flex-1 bg-white relative">
-                        <iframe src="https://docs.google.com/document/d/1UUTJ-31M1-SxbcM0nfAp29QumP0nxXjrFbs8RafGJpQ/preview" class="w-full h-full border-0"></iframe>
+                    <div class="flex-1 bg-white relative iframe-scroll-wrapper">
+                        <iframe src="https://docs.google.com/document/d/1UUTJ-31M1-SxbcM0nfAp29QumP0nxXjrFbs8RafGJpQ/preview" class="w-full h-full border-0 min-h-[500px]"></iframe>
                     </div>
                 </div>
                 <div class="lg:col-span-4 flex flex-col gap-6 h-full overflow-y-auto pr-1">
@@ -351,8 +356,8 @@
                         <h3 class="font-bold text-slate-700 flex items-center gap-2"><i class="ph ph-book-open text-blue-600"></i> Reading Material: A Matter of Time</h3>
                         <a href="https://docs.google.com/document/d/1_ffzeE_hWsKeOqei44YbaujQCNBhAeTm4Q-csKSUUQo/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline">Buka di Tab Baru</a>
                     </div>
-                    <div class="flex-1 bg-white relative">
-                        <iframe src="https://docs.google.com/document/d/1_ffzeE_hWsKeOqei44YbaujQCNBhAeTm4Q-csKSUUQo/preview" class="w-full h-full border-0"></iframe>
+                    <div class="flex-1 bg-white relative iframe-scroll-wrapper">
+                        <iframe src="https://docs.google.com/document/d/1_ffzeE_hWsKeOqei44YbaujQCNBhAeTm4Q-csKSUUQo/preview" class="w-full h-full border-0 min-h-[500px]"></iframe>
                     </div>
                 </div>
                 <div class="lg:col-span-4 flex flex-col gap-6 h-full overflow-y-auto pr-1">
@@ -385,8 +390,8 @@
                         <h3 class="font-bold text-slate-700 flex items-center gap-2"><i class="ph ph-book-open text-blue-600"></i> Reading Material: Our Daily Lives</h3>
                         <a href="https://docs.google.com/document/d/1di46RhwTcqz7Bk8HQttg0uzZTM5-9v6a9hv3_bq-QRY/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline">Buka di Tab Baru</a>
                     </div>
-                    <div class="flex-1 bg-white relative">
-                        <iframe src="https://docs.google.com/document/d/1di46RhwTcqz7Bk8HQttg0uzZTM5-9v6a9hv3_bq-QRY/preview" class="w-full h-full border-0"></iframe>
+                    <div class="flex-1 bg-white relative iframe-scroll-wrapper">
+                        <iframe src="https://docs.google.com/document/d/1di46RhwTcqz7Bk8HQttg0uzZTM5-9v6a9hv3_bq-QRY/preview" class="w-full h-full border-0 min-h-[500px]"></iframe>
                     </div>
                 </div>
                 <div class="lg:col-span-4 flex flex-col gap-6 h-full overflow-y-auto pr-1">
@@ -419,8 +424,8 @@
                         <h3 class="font-bold text-slate-700 flex items-center gap-2"><i class="ph ph-book-open text-blue-600"></i> Reading Material: Future Plans</h3>
                         <a href="https://docs.google.com/document/d/10kBMom2u4yiRxYHvwHinB1Qe5ZlXyrvrsv6cWxb6YYA/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline">Buka di Tab Baru</a>
                     </div>
-                    <div class="flex-1 bg-white relative">
-                        <iframe src="https://docs.google.com/document/d/10kBMom2u4yiRxYHvwHinB1Qe5ZlXyrvrsv6cWxb6YYA/preview" class="w-full h-full border-0"></iframe>
+                    <div class="flex-1 bg-white relative iframe-scroll-wrapper">
+                        <iframe src="https://docs.google.com/document/d/10kBMom2u4yiRxYHvwHinB1Qe5ZlXyrvrsv6cWxb6YYA/preview" class="w-full h-full border-0 min-h-[500px]"></iframe>
                     </div>
                 </div>
                 <div class="lg:col-span-4 flex flex-col gap-6 h-full overflow-y-auto pr-1">
@@ -466,6 +471,10 @@
             const selectedContent = document.getElementById(tabId);
             if (selectedContent) {
                 selectedContent.classList.remove('hidden');
+                
+                // Trik: Force Reflow agar browser mobile sadar ada perubahan layout (mengatasi scroll macet)
+                void selectedContent.offsetWidth; 
+
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
 
