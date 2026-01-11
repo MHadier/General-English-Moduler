@@ -3,592 +3,483 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>General English Module</title>
+    <title>General English Module - USN</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-    
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
 
     <style>
         body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, h4, h5 { font-family: 'Poppins', sans-serif; }
+        h1, h2, h3, h4, h5, .font-heading { font-family: 'Poppins', sans-serif; }
         
-        .fade-in {
-            animation: fadeIn 0.4s ease-in-out;
+        /* Animasi Konten */
+        .tab-content {
+            animation: fadeIn 0.4s ease-out;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .nav-item.active {
-            background-color: #eff6ff;
-            color: #2563eb;
-            border-right: 3px solid #2563eb;
+        /* Scrollbar Halus untuk container tab (mobile) */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* =========================================
+           NAVIGASI KARTU (CARD TABS)
+           ========================================= */
+        .nav-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            white-space: nowrap;
+            padding: 10px 20px;
+            border-radius: 99px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+            cursor: pointer;
+            flex-shrink: 0;
+            
+            /* State Default (Tidak Aktif) */
+            background-color: #ffffff;
+            color: #64748b; /* Slate-500 */
+            border-color: #e2e8f0; /* Slate-200 */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
-        .nav-item.active span {
-            background-color: #bfdbfe;
-            color: #1e40af;
+
+        .nav-card:hover {
+            border-color: #93c5fd; /* Blue-300 */
+            color: #2563eb; /* Blue-600 */
+            transform: translateY(-2px);
         }
-        
-        /* Custom scrollbar for sidebar */
-        aside::-webkit-scrollbar { width: 4px; }
-        aside::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
+
+        /* State Aktif (Terpilih) */
+        .nav-card.active {
+            background-color: #2563eb; /* Blue-600 */
+            color: #ffffff;
+            border-color: #2563eb;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            transform: translateY(-2px); 
+        }
+
+        .nav-card.active i {
+            color: #ffffff;
+        }
+
+        iframe { display: block; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 h-screen overflow-hidden flex flex-col md:flex-row">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-    <aside class="w-full md:w-72 bg-white border-r border-slate-200 flex-shrink-0 flex flex-col h-auto md:h-full z-20 shadow-sm transition-all">
-        <div class="p-5 border-b border-slate-100 bg-blue-600 text-white flex justify-between items-center md:block">
-            <div>
-                <div class="flex items-center gap-2 mb-1">
-                    <i class="ph ph-graduation-cap text-2xl"></i>
-                    <span class="font-bold text-lg tracking-wide">GENERAL ENGLISH MODULE</span>
-                </div>
-                <p class="text-xs text-blue-100 opacity-90 hidden md:block">Universitas Sembilanbelas November</p>
-            </div>
-            <button onclick="document.getElementById('mobile-nav').classList.toggle('hidden')" class="md:hidden text-white focus:outline-none">
-                <i class="ph ph-list text-2xl"></i>
-            </button>
-        </div>
-
-        <nav id="mobile-nav" class="hidden md:flex flex-col flex-1 overflow-y-auto p-4 space-y-1 bg-white md:bg-transparent absolute md:static w-full top-16 left-0 shadow-lg md:shadow-none z-50">
-            <button onclick="switchTab('home')" id="btn-home" class="nav-item active w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 transition-all text-left">
-                <i class="ph ph-house text-lg"></i> Dashboard
-            </button>
-
-            <button onclick="switchTab('intro')" id="btn-intro" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 transition-all text-left group">
-                <i class="ph ph-info text-lg"></i> Introduction
-            </button>
-
-            <button onclick="switchTab('syllabus')" id="btn-syllabus" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 transition-all text-left group">
-                <i class="ph ph-list-checks text-lg"></i> The Syllabus
-            </button>
-
-            <p class="px-4 py-2 mt-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">Learning Modules</p>
+    <header class="bg-slate-50/95 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200 pb-2 shadow-sm">
+        
+        <div class="container mx-auto px-4 pt-6 pb-4 flex flex-col items-center justify-center text-center relative">
             
-            <button onclick="switchTab('unit1')" id="btn-unit1" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 transition-all text-left group">
-                <span class="bg-slate-100 text-slate-500 py-1 px-2 rounded text-xs font-bold group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">U1</span> Socializing
-            </button>
-            <button onclick="switchTab('unit2')" id="btn-unit2" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 transition-all text-left group">
-                <span class="bg-slate-100 text-slate-500 py-1 px-2 rounded text-xs font-bold group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">U2</span> Family Life
-            </button>
-            <button onclick="switchTab('unit3')" id="btn-unit3" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 transition-all text-left group">
-                <span class="bg-slate-100 text-slate-500 py-1 px-2 rounded text-xs font-bold group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">U3</span> A Matter of Time
-            </button>
-            <button onclick="switchTab('unit4')" id="btn-unit4" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 transition-all text-left group">
-                <span class="bg-slate-100 text-slate-500 py-1 px-2 rounded text-xs font-bold group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">U4</span> Our Daily Lives
-            </button>
-            <button onclick="switchTab('unit5')" id="btn-unit5" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 transition-all text-left group">
-                <span class="bg-slate-100 text-slate-500 py-1 px-2 rounded text-xs font-bold group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">U5</span> Future Plans
-            </button>
-        </nav>
-        
-        <div class="p-4 border-t border-slate-100 text-center hidden md:block">
-            <p class="text-xs text-slate-400">© 2026 General English Module Team</p>
-        </div>
-    </aside>
+            <div class="mb-3">
+                <img src="https://upload.wikimedia.org/wikipedia/id/1/11/Logo_USN_Kolaka.png" 
+                     alt="Logo USN Kolaka" 
+                     class="h-16 md:h-20 w-auto object-contain drop-shadow-sm hover:scale-105 transition-transform duration-300">
+            </div>
 
-    <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50 scroll-smooth relative">
-        
-        <div id="home" class="tab-content max-w-4xl mx-auto space-y-6 fade-in">
-            <header class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 text-center md:text-left relative overflow-hidden">
-                <div class="relative z-10">
-                    <h1 class="text-3xl font-bold text-slate-800 mb-2">GENERAL ENGLISH MODULE</h1>
-                    <p class="text-slate-500 text-lg">Modul Pembelajaran Mandiri Mahasiswa.</p>
-                    <div class="mt-6 flex gap-3 justify-center md:justify-start">
-                        <button onclick="switchTab('intro')" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-medium shadow-sm shadow-blue-200">INTRODUCTION</button>
-                        <button onclick="switchTab('syllabus')" class="bg-white border border-slate-300 text-slate-600 px-6 py-3 rounded-lg hover:bg-slate-50 transition font-medium shadow-sm">THE SYLLABUS</button>
+            <p class="text-xs md:text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">
+                Universitas Sembilanbelas November
+            </p>
+
+            <h1 class="text-xl md:text-3xl font-extrabold text-slate-800 font-heading tracking-tight leading-tight">
+                GENERAL ENGLISH MODULE
+            </h1>
+            
+            </div>
+
+        <div class="container mx-auto px-0 md:px-4 mt-2">
+            <nav class="flex overflow-x-auto no-scrollbar gap-2 px-4 pb-4 pt-2 justify-start md:justify-center items-center w-full" id="tab-container">
+                
+                <button onclick="switchTab('home')" id="btn-home" class="nav-card active md:hidden">
+                    <i class="ph ph-house text-lg"></i>
+                </button>
+
+                <button onclick="switchTab('intro')" id="btn-intro" class="nav-card">
+                    <i class="ph ph-info text-lg"></i> Introduction
+                </button>
+
+                <button onclick="switchTab('syllabus')" id="btn-syllabus" class="nav-card">
+                    <i class="ph ph-list-checks text-lg"></i> Syllabus
+                </button>
+
+                <div class="w-px h-6 bg-slate-300 mx-1 self-center hidden md:block flex-shrink-0"></div>
+
+                <button onclick="switchTab('unit1')" id="btn-unit1" class="nav-card">
+                    Unit 1
+                </button>
+                
+                <button onclick="switchTab('unit2')" id="btn-unit2" class="nav-card">
+                    Unit 2
+                </button>
+                
+                <button onclick="switchTab('unit3')" id="btn-unit3" class="nav-card">
+                    Unit 3
+                </button>
+                
+                <button onclick="switchTab('unit4')" id="btn-unit4" class="nav-card">
+                    Unit 4
+                </button>
+                
+                <button onclick="switchTab('unit5')" id="btn-unit5" class="nav-card">
+                    Unit 5
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-1 container mx-auto px-4 py-8 max-w-6xl">
+
+        <div id="home" class="tab-content">
+            <div class="text-center py-10 space-y-4">
+                <div class="inline-block p-4 rounded-full bg-blue-50 mb-2">
+                    <i class="ph ph-student text-4xl text-blue-600"></i>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800 font-heading">Selamat Datang Mahasiswa</h2>
+                <p class="text-slate-500 text-lg max-w-2xl mx-auto">Silakan pilih Unit pembelajaran di atas atau lihat silabus untuk memulai.</p>
+                
+                </div>
+
+            <div class="grid md:grid-cols-3 gap-6 mt-4">
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition cursor-pointer group flex flex-col items-center text-center" onclick="switchTab('unit1')">
+                    <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center mb-4 group-hover:bg-green-600 group-hover:text-white transition">
+                        <i class="ph ph-book-open text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800">READING SECTION</h3>
+                    <p class="text-sm text-slate-500 mt-2">Akses materi bacaan, teks, dan rangkuman grammar.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition cursor-pointer group flex flex-col items-center text-center" onclick="switchTab('unit1')">
+                    <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-4 group-hover:bg-purple-600 group-hover:text-white transition">
+                        <i class="ph ph-speaker-high text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800">SPEAKING & LISTENING</h3>
+                    <p class="text-sm text-slate-500 mt-2">Audio percakapan native speaker untuk latihan mendengar dan berbicara.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition cursor-pointer group flex flex-col items-center text-center" onclick="switchTab('unit1')">
+                    <div class="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center mb-4 group-hover:bg-orange-600 group-hover:text-white transition">
+                        <i class="ph ph-pencil-simple text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800">WRITING SECTION</h3>
+                    <p class="text-sm text-slate-500 mt-2">Tugas tertulis dan latihan soal untuk mengasah kemampuan menulis.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="intro" class="tab-content hidden">
+            <div class="bg-white rounded-2xl border border-slate-200 p-8 md:p-12 shadow-sm max-w-4xl mx-auto">
+                <div class="border-l-4 border-blue-600 pl-6 mb-8">
+                    <h2 class="text-3xl font-bold text-slate-800">Kata Pengantar</h2>
+                    <p class="text-slate-400 mt-1">Latar belakang modul pembelajaran.</p>
+                </div>
+                <div class="prose prose-lg text-slate-600 text-justify leading-relaxed">
+                    <p class="mb-4">Bahasa Inggris adalah bahasa utama dalam komunikasi antarbangsa dan pergaulan dunia. Makin datarnya dunia dengan perkembangan teknologi informasi dan komunikasi menyebabkan pergaulan tidak dapat lagi dibatasi oleh batas-batas negara.</p>
+                    <p class="mb-4">Kurikulum Merdeka Belajar menyadari peran penting bahasa Inggris tersebut. Sehingga Kurikulum ini dirancang untuk menyongsong model pembelajaran abad ke-21. Di dalamnya terdapat pergeseran pembelajaran dari siswa diberi tahu menjadi siswa mencari tahu dari berbagai sumber belajar melampaui batas pengajar dan satuan pendidikan.</p>
+                    <p>Modul ini menjabarkan usaha minimal yang harus dilakukan mahasiswa untuk mencapai kompetensi yang diharapkan.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="syllabus" class="tab-content hidden">
+            <div class="max-w-4xl mx-auto bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                <div class="bg-slate-800 text-white p-6">
+                    <h2 class="text-2xl font-bold flex items-center gap-3"><i class="ph ph-list-checks"></i> Course Syllabus</h2>
+                </div>
+                <div class="p-6 divide-y divide-slate-100">
+                    <div class="py-4 hover:bg-slate-50 transition p-4 rounded-lg">
+                        <div class="flex items-center gap-4 mb-2">
+                            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded text-xs font-bold">UNIT 1</span>
+                            <h3 class="font-bold text-lg text-slate-800">Socializing</h3>
+                        </div>
+                        <ul class="list-disc list-inside text-slate-600 ml-2 space-y-1 text-sm">
+                            <li>Stating greetings and farewell.</li>
+                            <li>Introducing him/herself.</li>
+                            <li>Introducing others.</li>
+                        </ul>
+                    </div>
+                    <div class="py-4 hover:bg-slate-50 transition p-4 rounded-lg">
+                        <div class="flex items-center gap-4 mb-2">
+                            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded text-xs font-bold">UNIT 2</span>
+                            <h3 class="font-bold text-lg text-slate-800">Family Life</h3>
+                        </div>
+                        <ul class="list-disc list-inside text-slate-600 ml-2 space-y-1 text-sm">
+                            <li>Recognizing family members in English.</li>
+                            <li>Describing family members (physical & personalities).</li>
+                        </ul>
+                    </div>
+                    <div class="py-4 hover:bg-slate-50 transition p-4 rounded-lg">
+                        <div class="flex items-center gap-4 mb-2">
+                            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded text-xs font-bold">UNIT 3</span>
+                            <h3 class="font-bold text-lg text-slate-800">A Matter of Time</h3>
+                        </div>
+                        <ul class="list-disc list-inside text-slate-600 ml-2 space-y-1 text-sm">
+                            <li>Recognizing elements of a clock.</li>
+                            <li>Asking about time & Prepositions.</li>
+                        </ul>
+                    </div>
+                     <div class="py-4 hover:bg-slate-50 transition p-4 rounded-lg">
+                        <div class="flex items-center gap-4 mb-2">
+                            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded text-xs font-bold">UNIT 4</span>
+                            <h3 class="font-bold text-lg text-slate-800">Our Daily Lives</h3>
+                        </div>
+                        <ul class="list-disc list-inside text-slate-600 ml-2 space-y-1 text-sm">
+                            <li>Asking about daily routines.</li>
+                            <li>Adverbs of frequency.</li>
+                        </ul>
+                    </div>
+                     <div class="py-4 hover:bg-slate-50 transition p-4 rounded-lg">
+                        <div class="flex items-center gap-4 mb-2">
+                            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded text-xs font-bold">UNIT 5</span>
+                            <h3 class="font-bold text-lg text-slate-800">Plans In Life</h3>
+                        </div>
+                        <ul class="list-disc list-inside text-slate-600 ml-2 space-y-1 text-sm">
+                            <li>Future possibilities (Will/Going to).</li>
+                            <li>Describing ambition and dreams.</li>
+                        </ul>
                     </div>
                 </div>
-            </header>
+            </div>
+        </div>
 
-            <div>
-                <h3 class="font-bold text-lg text-slate-800 mb-4 px-2">Fokus Keterampilan (Skills)</h3>
-                <div class="grid md:grid-cols-3 gap-4">
+        <div id="unit1" class="tab-content hidden">
+            <div class="grid lg:grid-cols-12 gap-6 h-auto lg:h-[80vh]">
+                
+                <div class="lg:col-span-8 flex flex-col h-full bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden min-h-[500px]">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-700 flex items-center gap-2"><i class="ph ph-book-open text-blue-600"></i> Reading Material: Socializing</h3>
+                        <a href="https://docs.google.com/document/d/1ltYX88_-THUkgvJ8W2YpEGgzoiHbQPE_0vpi9CSqAuQ/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline">Buka di Tab Baru</a>
+                    </div>
+                    <div class="flex-1 bg-white relative">
+                        <iframe src="https://docs.google.com/document/d/1ltYX88_-THUkgvJ8W2YpEGgzoiHbQPE_0vpi9CSqAuQ/preview" 
+                                class="w-full h-full border-0" 
+                                allow="autoplay">
+                        </iframe>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-4 flex flex-col gap-6 h-full overflow-y-auto pr-1">
                     
-                    <div onclick="jumpTo('unit1', 'reading-u1')" class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:shadow-md hover:border-blue-300 transition-all group">
-                        <div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><i class="ph ph-book-open text-2xl"></i></div>
-                        <h3 class="font-bold text-lg mb-1 text-slate-800 group-hover:text-blue-600">Reading Section</h3>
-                        <p class="text-sm text-slate-500">Akses materi bacaan, teks, dan rangkuman grammar.</p>
-                        <span class="text-xs font-bold text-green-600 mt-3 inline-block">Mulai di Unit 1 &rarr;</span>
-                    </div>
-
-                    <div onclick="jumpTo('unit1', 'listening-u1')" class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:shadow-md hover:border-blue-300 transition-all group">
-                        <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><i class="ph ph-microphone-stage text-2xl"></i></div>
-                        <h3 class="font-bold text-lg mb-1 text-slate-800 group-hover:text-blue-600">Speaking & Listening</h3>
-                        <p class="text-sm text-slate-500">Audio percakapan native speaker untuk latihan mendengar dan berbicara.</p>
-                        <span class="text-xs font-bold text-purple-600 mt-3 inline-block">Mulai di Unit 1 &rarr;</span>
-                    </div>
-
-                    <div onclick="jumpTo('unit1', 'writing-u1')" class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:shadow-md hover:border-blue-300 transition-all group">
-                        <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"><i class="ph ph-pencil-line text-2xl"></i></div>
-                        <h3 class="font-bold text-lg mb-1 text-slate-800 group-hover:text-blue-600">Writing Section</h3>
-                        <p class="text-sm text-slate-500">Tugas tertulis dan latihan soal untuk mengasah kemampuan menulis.</p>
-                        <span class="text-xs font-bold text-orange-600 mt-3 inline-block">Mulai di Unit 1 &rarr;</span>
-                    </div>
-
-                </div>
-            </div>
-            
-            <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-start gap-3">
-                <i class="ph ph-info text-blue-500 text-xl mt-0.5"></i>
-                <div class="text-sm text-slate-600">
-                    <p><strong>Catatan:</strong> Tombol di atas akan mengarahkan Anda ke materi di <strong>Unit 1</strong> sebagai permulaan. Silakan gunakan menu di sebelah kiri untuk berpindah ke unit lainnya (Unit 2 - Unit 5).</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="intro" class="tab-content hidden max-w-5xl mx-auto fade-in">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="border-b border-slate-100 bg-slate-800 text-white p-8 text-center md:text-left relative overflow-hidden">
-                    <div class="relative z-10">
-                        <span class="text-xs font-bold tracking-wider text-blue-300 uppercase mb-2 block">Modul Mahasiswa</span>
-                        <h2 class="text-3xl font-bold mb-2">GENERAL ENGLISH MODULE</h2>
-                        <p class="text-slate-300">Universitas Sembilanbelas November Kolaka</p>
-                    </div>
-                    <i class="ph ph-book-open-text absolute right-4 bottom-[-20px] text-9xl text-slate-700 opacity-20 transform rotate-12"></i>
-                </div>
-
-                <div class="p-6 md:p-10 space-y-10">
-                    <section>
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
                         <div class="flex items-center gap-3 mb-4">
-                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                                <i class="ph ph-quotes text-lg"></i>
+                            <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center">
+                                <i class="ph ph-headphones text-xl"></i>
                             </div>
-                            <h3 class="text-xl font-bold text-slate-800">Kata Pengantar</h3>
+                            <h3 class="font-bold text-slate-800">Listening Section</h3>
                         </div>
-                        <div class="prose prose-slate text-slate-600 leading-relaxed text-justify">
-                            <p class="mb-4">
-                                Bahasa Inggris adalah bahasa utama dalam komunikasi antarbangsa dan pergaulan dunia. Makin datarnya dunia dengan perkembangan teknologi informasi dan komunikasi menyebabkan pergaulan tidak dapat lagi dibatasi oleh batas-batas negara.
-                            </p>
-                            <p class="mb-4">
-                                Kurikulum Merdeka Belajar menyadari peran penting bahasa Inggris tersebut. Sehingga Kurikulum ini dirancang untuk menyongsong model pembelajaran abad ke-21. Di dalamnya terdapat pergeseran pembelajaran dari siswa diberi tahu menjadi siswa mencari tahu dari berbagai sumber belajar melampaui batas pengajar dan satuan pendidikan.
-                            </p>
-                            <p>
-                                Modul ini menjabarkan usaha minimal yang harus dilakukan mahasiswa untuk mencapai kompetensi yang diharapkan. Sesuai dengan pendekatan yang digunakan dalam Kurikulum Merdeka Belajar, mahasiswa diajak untuk berani mencari sumber belajar lain yang tersedia dan terbentang luas di sekitarnya.
-                            </p>
-                        </div>
-                    </section>
-                    
-                    <div class="bg-blue-600 text-white p-6 rounded-xl text-center mt-8 shadow-lg">
-                        <p class="mb-4 text-blue-100">Lanjut membaca silabus pembelajaran?</p>
-                        <button onclick="switchTab('syllabus')" class="bg-white text-blue-600 px-6 py-2 rounded-lg font-bold hover:bg-blue-50 transition shadow-sm inline-flex items-center gap-2">
-                            Buka Silabus <i class="ph ph-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="syllabus" class="tab-content hidden max-w-5xl mx-auto fade-in">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="border-b border-slate-100 bg-white p-6 md:p-8">
-                    <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-3">
-                        <i class="ph ph-list-checks text-blue-600"></i> The Syllabus
-                    </h2>
-                    <p class="text-slate-500 mt-2">Rencana Pembelajaran Semester & Peta Kompetensi.</p>
-                </div>
-
-                <div class="p-6 md:p-8 space-y-8">
-                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-6">
-                        <h3 class="font-bold text-lg text-slate-800 mb-3">Deskripsi Mata Kuliah</h3>
-                        <p class="text-slate-600 leading-relaxed mb-4">
-                            General English Module <strong>2 SKS</strong>. Materi Mata kuliah ini menggunakan pendekatan <em>genre based approach</em>, disajikan dari materi yang paling mudah hingga sulit untuk membantu mahasiswa memahami materi secara runut.
-                        </p>
+                        <p class="text-sm text-slate-500 mb-4">Dengarkan percakapan "Meeting Other Students".</p>
+                        <a href="https://learnenglish.britishcouncil.org/skills/listening/a1-listening/meeting-other-students" target="_blank" class="block w-full bg-purple-600 text-white text-center py-3 rounded-lg font-medium hover:bg-purple-700 transition">
+                            Buka Audio (British Council)
+                        </a>
                     </div>
 
-                    <div>
-                        <h3 class="font-bold text-lg text-slate-800 mb-6 border-b border-slate-100 pb-2">Learning Outcomes (Capaian Pembelajaran)</h3>
-                        <div class="space-y-4">
-                            <div class="flex flex-col md:flex-row gap-4 p-4 border border-slate-100 rounded-lg hover:bg-slate-50 transition-colors">
-                                <div class="w-full md:w-32 flex-shrink-0">
-                                    <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded">UNIT 1</span>
-                                    <h4 class="font-bold text-slate-800 mt-1">Socializing</h4>
-                                </div>
-                                <div class="flex-1">
-                                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
-                                        <li>Stating greetings and farewell.</li>
-                                        <li>Introducing him/herself.</li>
-                                        <li>Introducing others.</li>
-                                    </ul>
-                                </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex-1">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center">
+                                <i class="ph ph-pencil-simple text-xl"></i>
                             </div>
-                            <div class="flex flex-col md:flex-row gap-4 p-4 border border-slate-100 rounded-lg hover:bg-slate-50 transition-colors">
-                                <div class="w-full md:w-32 flex-shrink-0">
-                                    <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded">UNIT 2</span>
-                                    <h4 class="font-bold text-slate-800 mt-1">Family Life</h4>
-                                </div>
-                                <div class="flex-1">
-                                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
-                                        <li>Recognizing family members in English.</li>
-                                        <li>Requesting information about family members.</li>
-                                        <li>Describing family members (physical appearances & personalities).</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="flex flex-col md:flex-row gap-4 p-4 border border-slate-100 rounded-lg hover:bg-slate-50 transition-colors">
-                                <div class="w-full md:w-32 flex-shrink-0">
-                                    <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded">UNIT 3</span>
-                                    <h4 class="font-bold text-slate-800 mt-1">A Matter of Time</h4>
-                                </div>
-                                <div class="flex-1">
-                                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
-                                        <li>Recognizing the elements of a clock.</li>
-                                        <li>Using appropriate expressions about clock and time.</li>
-                                        <li>Asking about time.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                             <div class="flex flex-col md:flex-row gap-4 p-4 border border-slate-100 rounded-lg hover:bg-slate-50 transition-colors">
-                                <div class="w-full md:w-32 flex-shrink-0">
-                                    <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded">UNIT 4</span>
-                                    <h4 class="font-bold text-slate-800 mt-1">Our Daily Lives</h4>
-                                </div>
-                                <div class="flex-1">
-                                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
-                                        <li>Asking someone about his/her daily routines.</li>
-                                        <li>Giving specific information about daily routines according to frequency and hours.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="flex flex-col md:flex-row gap-4 p-4 border border-slate-100 rounded-lg hover:bg-slate-50 transition-colors">
-                                <div class="w-full md:w-32 flex-shrink-0">
-                                    <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded">UNIT 5</span>
-                                    <h4 class="font-bold text-slate-800 mt-1">Plans In Life</h4>
-                                </div>
-                                <div class="flex-1">
-                                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
-                                        <li>Asking questions about future possibilities.</li>
-                                        <li>Describing ambition and dreams.</li>
-                                        
-                                        
-                                        
-                                    </ul>
-                                </div>
-                            </div>
+                            <h3 class="font-bold text-slate-800">Writing Task</h3>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-                            
-        <div id="unit1" class="tab-content hidden max-w-5xl mx-auto fade-in">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="border-b border-slate-100 bg-blue-50/50 p-6 flex justify-between items-center">
-                    <div>
-                        <span class="text-xs font-bold tracking-wider text-blue-600 uppercase">Unit 1</span>
-                        <h2 class="text-2xl font-bold text-slate-800">Socializing</h2>
-                    </div>
-                    <div class="h-10 w-10 bg-white shadow-sm rounded-full flex items-center justify-center text-blue-600"><i class="ph ph-users text-xl"></i></div>
-                </div>
-
-                <div class="p-6 md:p-8 grid lg:grid-cols-2 gap-8">
-                    <div class="space-y-6" id="reading-u1">
-                        <div class="prose prose-sm text-slate-600">
-                            <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2"><i class="ph ph-book-open"></i> Reading & Materi</h3>
-                            <p>Dalam unit ini Anda akan mempelajari: Greetings (Salam), Self Introduction (Perkenalan Diri), dan Pronouns.</p>
-                        </div>
-                        <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 flex items-center gap-4 hover:bg-blue-100 transition-colors">
-                            <div class="bg-white p-2 rounded-full shadow-sm text-blue-600"><i class="ph ph-file-doc text-2xl"></i></div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-800">Rangkuman Materi Unit 1</p>
-                                <a href="https://docs.google.com/document/d/1ltYX88_-THUkgvJ8W2YpEGgzoiHbQPE_0vpi9CSqAuQ/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline flex items-center gap-1">Download via Google Docs <i class="ph ph-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-6">
-                        <div class="bg-slate-50 rounded-xl p-5 border border-slate-100" id="listening-u1">
-                            <h4 class="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2"><i class="ph ph-microphone-stage"></i> Speaking & Listening Section</h4>
-                            <div class="text-center p-4 bg-white border border-slate-200 rounded-lg">
-                                <p class="text-sm text-slate-500 mb-3">Materi listening untuk unit ini tersedia di British Council.</p>
-                                <a href="https://learnenglish.britishcouncil.org/skills/listening/a1-listening/meeting-other-students" target="_blank" class="inline-flex items-center gap-2 bg-slate-800 text-white px-4 py-2 rounded text-sm hover:bg-slate-700 transition">
-                                    <i class="ph ph-speaker-high"></i> Buka Audio Sumber
-                                </a>
-                            </div>
+                        
+                        <div class="bg-orange-50 rounded-lg p-4 mb-4 border border-orange-100">
+                            <p class="text-sm font-semibold text-slate-800 mb-1">Instruksi:</p>
+                            <p class="text-xs text-slate-600">Download soal di bawah ini, kerjakan, lalu kirim jawabannya.</p>
                         </div>
 
-                        <div class="border-t border-slate-100 pt-6" id="writing-u1">
-                            <h4 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2"><i class="ph ph-pencil-line"></i> Writing Tasks (Tugas)</h4>
-                            
-                            <div class="bg-orange-50 border border-orange-100 rounded-lg p-4 flex items-center gap-4 mb-4 hover:bg-orange-100 transition-colors">
-                                <div class="bg-white p-2 rounded-full shadow-sm text-orange-600"><i class="ph ph-clipboard-text text-2xl"></i></div>
-                                <div>
-                                    <p class="text-sm font-bold text-slate-800">File Soal / Tugas Unit 1</p>
-                                    <a href="https://docs.google.com/document/d/1l3vpdEP63uqn1sz55Fg5a2eGd_9MIbdcT0CwgKWhn3w/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline flex items-center gap-1">Buka File Tugas <i class="ph ph-arrow-right"></i></a>
-                                </div>
-                            </div>
-                            <a href="https://wa.me/?text=Assalamualaikum%20Pak%2C%20berikut%20jawaban%20Unit%201%20saya.%0ANama%3A%20...%0ANIM%3A%20...%0A%0A(Tulis%20Jawaban%20Disini)" target="_blank" class="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium px-4 py-3 rounded-lg w-full transition-all shadow-sm">
-                                <i class="ph ph-whatsapp-logo text-xl"></i> Kirim Jawaban via WhatsApp
+                        <div class="space-y-3">
+                            <a href="https://docs.google.com/document/d/1l3vpdEP63uqn1sz55Fg5a2eGd_9MIbdcT0CwgKWhn3w/edit?usp=drivesdk" target="_blank" class="flex items-center justify-center gap-2 w-full border border-slate-300 text-slate-600 py-3 rounded-lg text-sm hover:bg-slate-50 transition">
+                                <i class="ph ph-file-text"></i> Lihat Soal
+                            </a>
+                            <a href="https://wa.me/?text=Assalamualaikum%20Pak%2C%20berikut%20jawaban%20Unit%201%20saya.%0ANama%3A%20...%0ANIM%3A%20...%0A%0A(Tulis%20Jawaban%20Disini)" target="_blank" class="flex items-center justify-center gap-2 w-full bg-green-500 text-white py-3 rounded-lg text-sm hover:bg-green-600 transition shadow-sm shadow-green-200">
+                                <i class="ph ph-whatsapp-logo text-lg"></i> Kirim Jawaban
                             </a>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
 
-        <div id="unit2" class="tab-content hidden max-w-5xl mx-auto fade-in">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="border-b border-slate-100 bg-blue-50/50 p-6 flex justify-between items-center">
-                    <div>
-                        <span class="text-xs font-bold tracking-wider text-blue-600 uppercase">Unit 2</span>
-                        <h2 class="text-2xl font-bold text-slate-800">Family Life</h2>
+        <div id="unit2" class="tab-content hidden">
+            <div class="grid lg:grid-cols-12 gap-6 h-auto lg:h-[80vh]">
+                <div class="lg:col-span-8 flex flex-col h-full bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden min-h-[500px]">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-700 flex items-center gap-2"><i class="ph ph-book-open text-blue-600"></i> Reading Material: Family Life</h3>
+                        <a href="https://docs.google.com/document/d/1UUTJ-31M1-SxbcM0nfAp29QumP0nxXjrFbs8RafGJpQ/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline">Buka di Tab Baru</a>
                     </div>
-                    <div class="h-10 w-10 bg-white shadow-sm rounded-full flex items-center justify-center text-blue-600"><i class="ph ph-house-line text-xl"></i></div>
+                    <div class="flex-1 bg-white relative">
+                        <iframe src="https://docs.google.com/document/d/1UUTJ-31M1-SxbcM0nfAp29QumP0nxXjrFbs8RafGJpQ/preview" class="w-full h-full border-0"></iframe>
+                    </div>
                 </div>
-
-                <div class="p-6 md:p-8 grid lg:grid-cols-2 gap-8">
-                    <div class="space-y-6" id="reading-u2">
-                        <div class="prose prose-sm text-slate-600">
-                            <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2"><i class="ph ph-book-open"></i> Reading & Materi</h3>
-                            <p>Topik: Family Members, Physical Appearance, Personality, Simple Present (Have/Has).</p>
+                <div class="lg:col-span-4 flex flex-col gap-6 h-full overflow-y-auto pr-1">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center"><i class="ph ph-headphones text-xl"></i></div>
+                            <h3 class="font-bold text-slate-800">Listening Section</h3>
                         </div>
-                        <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 flex items-center gap-4 hover:bg-blue-100 transition-colors">
-                            <div class="bg-white p-2 rounded-full shadow-sm text-blue-600"><i class="ph ph-file-doc text-2xl"></i></div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-800">Rangkuman Materi Unit 2</p>
-                                <a href="https://docs.google.com/document/d/1UUTJ-31M1-SxbcM0nfAp29QumP0nxXjrFbs8RafGJpQ/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline flex items-center gap-1">Download via Google Docs <i class="ph ph-arrow-right"></i></a>
-                            </div>
-                        </div>
+                        <p class="text-sm text-slate-500 mb-4">Topik: The Family.</p>
+                        <a href="https://english-practice.net/practice-listening-english-exercises-for-a1-the-family/" target="_blank" class="block w-full bg-purple-600 text-white text-center py-3 rounded-lg font-medium hover:bg-purple-700 transition">Buka Audio Sumber</a>
                     </div>
-
-                    <div class="space-y-6">
-                        <div class="bg-slate-50 rounded-xl p-5 border border-slate-100" id="listening-u2">
-                            <h4 class="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2"><i class="ph ph-microphone-stage"></i> Speaking & Listening Section</h4>
-                            <div class="text-center p-4 bg-white border border-slate-200 rounded-lg">
-                                <p class="text-sm text-slate-500 mb-3">Materi listening untuk unit ini tersedia di website eksternal.</p>
-                                <a href="https://english-practice.net/practice-listening-english-exercises-for-a1-the-family/" target="_blank" class="inline-flex items-center gap-2 bg-slate-800 text-white px-4 py-2 rounded text-sm hover:bg-slate-700 transition">
-                                    <i class="ph ph-speaker-high"></i> Buka Audio Sumber
-                                </a>
-                            </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex-1">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center"><i class="ph ph-pencil-simple text-xl"></i></div>
+                            <h3 class="font-bold text-slate-800">Writing Task</h3>
                         </div>
-
-                        <div class="border-t border-slate-100 pt-6" id="writing-u2">
-                            <h4 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2"><i class="ph ph-pencil-line"></i> Writing Tasks (Tugas)</h4>
-                            <div class="bg-orange-50 border border-orange-100 rounded-lg p-4 flex items-center gap-4 mb-4 hover:bg-orange-100 transition-colors">
-                                <div class="bg-white p-2 rounded-full shadow-sm text-orange-600"><i class="ph ph-clipboard-text text-2xl"></i></div>
-                                <div>
-                                    <p class="text-sm font-bold text-slate-800">File Soal / Tugas Unit 2</p>
-                                    <a href="https://docs.google.com/document/d/1FdyuYLBGSUAXYhkTXYPic7t3Q32OHzge-PrZeSZiaMs/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline flex items-center gap-1">Buka File Tugas <i class="ph ph-arrow-right"></i></a>
-                                </div>
-                            </div>
-                            <a href="https://wa.me/?text=Assalamualaikum%20Pak%2C%20berikut%20jawaban%20Unit%202%20saya.%0ANama%3A%20...%0ANIM%3A%20...%0A%0A(Tulis%20Jawaban%20Disini)" target="_blank" class="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium px-4 py-3 rounded-lg w-full transition-all shadow-sm">
-                                <i class="ph ph-whatsapp-logo text-xl"></i> Kirim Jawaban via WhatsApp
-                            </a>
+                        <div class="space-y-3">
+                            <a href="https://docs.google.com/document/d/1FdyuYLBGSUAXYhkTXYPic7t3Q32OHzge-PrZeSZiaMs/edit?usp=drivesdk" target="_blank" class="flex items-center justify-center gap-2 w-full border border-slate-300 text-slate-600 py-3 rounded-lg text-sm hover:bg-slate-50 transition"><i class="ph ph-file-text"></i> Lihat Soal</a>
+                            <a href="https://wa.me/?text=Assalamualaikum%20Pak%2C%20berikut%20jawaban%20Unit%202%20saya.%0ANama%3A%20...%0ANIM%3A%20...%0A%0A(Tulis%20Jawaban%20Disini)" target="_blank" class="flex items-center justify-center gap-2 w-full bg-green-500 text-white py-3 rounded-lg text-sm hover:bg-green-600 transition shadow-sm"><i class="ph ph-whatsapp-logo text-lg"></i> Kirim Jawaban</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="unit3" class="tab-content hidden max-w-5xl mx-auto fade-in">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="border-b border-slate-100 bg-blue-50/50 p-6 flex justify-between items-center">
-                    <div>
-                        <span class="text-xs font-bold tracking-wider text-blue-600 uppercase">Unit 3</span>
-                        <h2 class="text-2xl font-bold text-slate-800">A Matter of Time</h2>
+        <div id="unit3" class="tab-content hidden">
+            <div class="grid lg:grid-cols-12 gap-6 h-auto lg:h-[80vh]">
+                <div class="lg:col-span-8 flex flex-col h-full bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden min-h-[500px]">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-700 flex items-center gap-2"><i class="ph ph-book-open text-blue-600"></i> Reading Material: A Matter of Time</h3>
+                        <a href="https://docs.google.com/document/d/1_ffzeE_hWsKeOqei44YbaujQCNBhAeTm4Q-csKSUUQo/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline">Buka di Tab Baru</a>
                     </div>
-                    <div class="h-10 w-10 bg-white shadow-sm rounded-full flex items-center justify-center text-blue-600"><i class="ph ph-clock text-xl"></i></div>
+                    <div class="flex-1 bg-white relative">
+                        <iframe src="https://docs.google.com/document/d/1_ffzeE_hWsKeOqei44YbaujQCNBhAeTm4Q-csKSUUQo/preview" class="w-full h-full border-0"></iframe>
+                    </div>
                 </div>
-
-                <div class="p-6 md:p-8 grid lg:grid-cols-2 gap-8">
-                    <div class="space-y-6" id="reading-u3">
-                        <div class="prose prose-sm text-slate-600">
-                            <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2"><i class="ph ph-book-open"></i> Reading & Materi</h3>
-                            <p>Topik: Telling Time, Preposition of Time (At, In, On), Schedules.</p>
+                <div class="lg:col-span-4 flex flex-col gap-6 h-full overflow-y-auto pr-1">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center"><i class="ph ph-headphones text-xl"></i></div>
+                            <h3 class="font-bold text-slate-800">Listening Section</h3>
                         </div>
-                        <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 flex items-center gap-4 hover:bg-blue-100 transition-colors">
-                            <div class="bg-white p-2 rounded-full shadow-sm text-blue-600"><i class="ph ph-file-doc text-2xl"></i></div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-800">Rangkuman Materi Unit 3</p>
-                                <a href="https://docs.google.com/document/d/1_ffzeE_hWsKeOqei44YbaujQCNBhAeTm4Q-csKSUUQo/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline flex items-center gap-1">Download via Google Docs <i class="ph ph-arrow-right"></i></a>
-                            </div>
-                        </div>
+                        <p class="text-sm text-slate-500 mb-4">Topik: Transport Announcement.</p>
+                        <a href="https://learnenglish.britishcouncil.org/skills/listening/a2-listening/transport-announcements" target="_blank" class="block w-full bg-purple-600 text-white text-center py-3 rounded-lg font-medium hover:bg-purple-700 transition">Buka Audio Sumber</a>
                     </div>
-
-                    <div class="space-y-6">
-                        <div class="bg-slate-50 rounded-xl p-5 border border-slate-100" id="listening-u3">
-                            <h4 class="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2"><i class="ph ph-microphone-stage"></i> Speaking & Listening Section</h4>
-                            <div class="text-center p-4 bg-white border border-slate-200 rounded-lg">
-                                <p class="text-sm text-slate-500 mb-3">Materi listening untuk unit ini tersedia di British Council.</p>
-                                <a href="https://learnenglish.britishcouncil.org/skills/listening/a2-listening/transport-announcements" target="_blank" class="inline-flex items-center gap-2 bg-slate-800 text-white px-4 py-2 rounded text-sm hover:bg-slate-700 transition">
-                                    <i class="ph ph-speaker-high"></i> Buka Audio Sumber
-                                </a>
-                            </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex-1">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center"><i class="ph ph-pencil-simple text-xl"></i></div>
+                            <h3 class="font-bold text-slate-800">Writing Task</h3>
                         </div>
-
-                        <div class="border-t border-slate-100 pt-6" id="writing-u3">
-                            <h4 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2"><i class="ph ph-pencil-line"></i> Writing Tasks (Tugas)</h4>
-                            <div class="bg-orange-50 border border-orange-100 rounded-lg p-4 flex items-center gap-4 mb-4 hover:bg-orange-100 transition-colors">
-                                <div class="bg-white p-2 rounded-full shadow-sm text-orange-600"><i class="ph ph-clipboard-text text-2xl"></i></div>
-                                <div>
-                                    <p class="text-sm font-bold text-slate-800">File Soal / Tugas Unit 3</p>
-                                    <a href="https://docs.google.com/document/d/17es4pERqIxad3UysdQ_Q3JA9vl5uCG4CKuvQVpqWJOA/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline flex items-center gap-1">Buka File Tugas <i class="ph ph-arrow-right"></i></a>
-                                </div>
-                            </div>
-                            <a href="https://wa.me/?text=Assalamualaikum%20Pak%2C%20berikut%20jawaban%20Unit%203%20saya.%0ANama%3A%20...%0ANIM%3A%20...%0A%0A(Tulis%20Jawaban%20Disini)" target="_blank" class="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium px-4 py-3 rounded-lg w-full transition-all shadow-sm">
-                                <i class="ph ph-whatsapp-logo text-xl"></i> Kirim Jawaban via WhatsApp
-                            </a>
+                        <div class="space-y-3">
+                            <a href="https://docs.google.com/document/d/17es4pERqIxad3UysdQ_Q3JA9vl5uCG4CKuvQVpqWJOA/edit?usp=drivesdk" target="_blank" class="flex items-center justify-center gap-2 w-full border border-slate-300 text-slate-600 py-3 rounded-lg text-sm hover:bg-slate-50 transition"><i class="ph ph-file-text"></i> Lihat Soal</a>
+                            <a href="https://wa.me/?text=Assalamualaikum%20Pak%2C%20berikut%20jawaban%20Unit%203%20saya.%0ANama%3A%20...%0ANIM%3A%20...%0A%0A(Tulis%20Jawaban%20Disini)" target="_blank" class="flex items-center justify-center gap-2 w-full bg-green-500 text-white py-3 rounded-lg text-sm hover:bg-green-600 transition shadow-sm"><i class="ph ph-whatsapp-logo text-lg"></i> Kirim Jawaban</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="unit4" class="tab-content hidden max-w-5xl mx-auto fade-in">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="border-b border-slate-100 bg-blue-50/50 p-6 flex justify-between items-center">
-                    <div>
-                        <span class="text-xs font-bold tracking-wider text-blue-600 uppercase">Unit 4</span>
-                        <h2 class="text-2xl font-bold text-slate-800">Our Daily Lives</h2>
+        <div id="unit4" class="tab-content hidden">
+            <div class="grid lg:grid-cols-12 gap-6 h-auto lg:h-[80vh]">
+                <div class="lg:col-span-8 flex flex-col h-full bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden min-h-[500px]">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-700 flex items-center gap-2"><i class="ph ph-book-open text-blue-600"></i> Reading Material: Our Daily Lives</h3>
+                        <a href="https://docs.google.com/document/d/1di46RhwTcqz7Bk8HQttg0uzZTM5-9v6a9hv3_bq-QRY/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline">Buka di Tab Baru</a>
                     </div>
-                    <div class="h-10 w-10 bg-white shadow-sm rounded-full flex items-center justify-center text-blue-600"><i class="ph ph-sun text-xl"></i></div>
+                    <div class="flex-1 bg-white relative">
+                        <iframe src="https://docs.google.com/document/d/1di46RhwTcqz7Bk8HQttg0uzZTM5-9v6a9hv3_bq-QRY/preview" class="w-full h-full border-0"></iframe>
+                    </div>
                 </div>
-
-                <div class="p-6 md:p-8 grid lg:grid-cols-2 gap-8">
-                    <div class="space-y-6" id="reading-u4">
-                        <div class="prose prose-sm text-slate-600">
-                            <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2"><i class="ph ph-book-open"></i> Reading & Materi</h3>
-                            <p>Topik: Daily Routines, Adverbs of Frequency (Always, Usually), Simple Present Action Verbs.</p>
+                <div class="lg:col-span-4 flex flex-col gap-6 h-full overflow-y-auto pr-1">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center"><i class="ph ph-headphones text-xl"></i></div>
+                            <h3 class="font-bold text-slate-800">Listening Section</h3>
                         </div>
-                        <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 flex items-center gap-4 hover:bg-blue-100 transition-colors">
-                            <div class="bg-white p-2 rounded-full shadow-sm text-blue-600"><i class="ph ph-file-doc text-2xl"></i></div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-800">Rangkuman Materi Unit 4</p>
-                                <a href="https://docs.google.com/document/d/1di46RhwTcqz7Bk8HQttg0uzZTM5-9v6a9hv3_bq-QRY/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline flex items-center gap-1">Download via Google Docs <i class="ph ph-arrow-right"></i></a>
-                            </div>
-                        </div>
+                        <p class="text-sm text-slate-500 mb-4">Topik: First Thing (Elllo).</p>
+                        <a href="https://www.elllo.org/english/Mixer051/T057-FirstThing.htm" target="_blank" class="block w-full bg-purple-600 text-white text-center py-3 rounded-lg font-medium hover:bg-purple-700 transition">Buka Audio Sumber</a>
                     </div>
-
-                    <div class="space-y-6">
-                        <div class="bg-slate-50 rounded-xl p-5 border border-slate-100" id="listening-u4">
-                            <h4 class="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2"><i class="ph ph-microphone-stage"></i> Speaking & Listening Section</h4>
-                            <div class="text-center p-4 bg-white border border-slate-200 rounded-lg">
-                                <p class="text-sm text-slate-500 mb-3">Materi listening untuk unit ini tersedia di Elllo.org.</p>
-                                <a href="https://www.elllo.org/english/Mixer051/T057-FirstThing.htm" target="_blank" class="inline-flex items-center gap-2 bg-slate-800 text-white px-4 py-2 rounded text-sm hover:bg-slate-700 transition">
-                                    <i class="ph ph-speaker-high"></i> Buka Audio Sumber
-                                </a>
-                            </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex-1">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center"><i class="ph ph-pencil-simple text-xl"></i></div>
+                            <h3 class="font-bold text-slate-800">Writing Task</h3>
                         </div>
-
-                        <div class="border-t border-slate-100 pt-6" id="writing-u4">
-                            <h4 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2"><i class="ph ph-pencil-line"></i> Writing Tasks (Tugas)</h4>
-                            <div class="bg-orange-50 border border-orange-100 rounded-lg p-4 flex items-center gap-4 mb-4 hover:bg-orange-100 transition-colors">
-                                <div class="bg-white p-2 rounded-full shadow-sm text-orange-600"><i class="ph ph-clipboard-text text-2xl"></i></div>
-                                <div>
-                                    <p class="text-sm font-bold text-slate-800">File Soal / Tugas Unit 4</p>
-                                    <a href="https://docs.google.com/document/d/1y8xkw6YxkERzpMgZyBl2h04_4JqOXeRi5WtZvMjqCB0/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline flex items-center gap-1">Buka File Tugas <i class="ph ph-arrow-right"></i></a>
-                                </div>
-                            </div>
-                            <a href="https://wa.me/?text=Assalamualaikum%20Pak%2C%20berikut%20jawaban%20Unit%204%20saya.%0ANama%3A%20...%0ANIM%3A%20...%0A%0A(Tulis%20Jawaban%20Disini)" target="_blank" class="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium px-4 py-3 rounded-lg w-full transition-all shadow-sm">
-                                <i class="ph ph-whatsapp-logo text-xl"></i> Kirim Jawaban via WhatsApp
-                            </a>
+                        <div class="space-y-3">
+                            <a href="https://docs.google.com/document/d/1y8xkw6YxkERzpMgZyBl2h04_4JqOXeRi5WtZvMjqCB0/edit?usp=drivesdk" target="_blank" class="flex items-center justify-center gap-2 w-full border border-slate-300 text-slate-600 py-3 rounded-lg text-sm hover:bg-slate-50 transition"><i class="ph ph-file-text"></i> Lihat Soal</a>
+                            <a href="https://wa.me/?text=Assalamualaikum%20Pak%2C%20berikut%20jawaban%20Unit%204%20saya.%0ANama%3A%20...%0ANIM%3A%20...%0A%0A(Tulis%20Jawaban%20Disini)" target="_blank" class="flex items-center justify-center gap-2 w-full bg-green-500 text-white py-3 rounded-lg text-sm hover:bg-green-600 transition shadow-sm"><i class="ph ph-whatsapp-logo text-lg"></i> Kirim Jawaban</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="unit5" class="tab-content hidden max-w-5xl mx-auto fade-in">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="border-b border-slate-100 bg-blue-50/50 p-6 flex justify-between items-center">
-                    <div>
-                        <span class="text-xs font-bold tracking-wider text-blue-600 uppercase">Unit 5</span>
-                        <h2 class="text-2xl font-bold text-slate-800">Future Plans</h2>
+
+        <div id="unit5" class="tab-content hidden">
+            <div class="grid lg:grid-cols-12 gap-6 h-auto lg:h-[80vh]">
+                <div class="lg:col-span-8 flex flex-col h-full bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden min-h-[500px]">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-700 flex items-center gap-2"><i class="ph ph-book-open text-blue-600"></i> Reading Material: Future Plans</h3>
+                        <a href="https://docs.google.com/document/d/10kBMom2u4yiRxYHvwHinB1Qe5ZlXyrvrsv6cWxb6YYA/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline">Buka di Tab Baru</a>
                     </div>
-                    <div class="h-10 w-10 bg-white shadow-sm rounded-full flex items-center justify-center text-blue-600"><i class="ph ph-rocket-launch text-xl"></i></div>
+                    <div class="flex-1 bg-white relative">
+                        <iframe src="https://docs.google.com/document/d/10kBMom2u4yiRxYHvwHinB1Qe5ZlXyrvrsv6cWxb6YYA/preview" class="w-full h-full border-0"></iframe>
+                    </div>
                 </div>
-
-                <div class="p-6 md:p-8 grid lg:grid-cols-2 gap-8">
-                    <div class="space-y-6" id="reading-u5">
-                        <div class="prose prose-sm text-slate-600">
-                            <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2"><i class="ph ph-book-open"></i> Reading & Materi</h3>
-                            <p>Topik: Future Expressions (Will vs Going to), Ambitions, Dreams.</p>
+                <div class="lg:col-span-4 flex flex-col gap-6 h-full overflow-y-auto pr-1">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center"><i class="ph ph-headphones text-xl"></i></div>
+                            <h3 class="font-bold text-slate-800">Listening Section</h3>
                         </div>
-                        <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 flex items-center gap-4 hover:bg-blue-100 transition-colors">
-                            <div class="bg-white p-2 rounded-full shadow-sm text-blue-600"><i class="ph ph-file-doc text-2xl"></i></div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-800">Rangkuman Materi Unit 5</p>
-                                <a href="https://docs.google.com/document/d/10kBMom2u4yiRxYHvwHinB1Qe5ZlXyrvrsv6cWxb6YYA/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline flex items-center gap-1">Download via Google Docs <i class="ph ph-arrow-right"></i></a>
-                            </div>
-                        </div>
+                        <p class="text-sm text-slate-500 mb-4">Topik: Clothes & Future Plans.</p>
+                        <a href="https://english-practice.net/listening-exercises-a1-clothes/" target="_blank" class="block w-full bg-purple-600 text-white text-center py-3 rounded-lg font-medium hover:bg-purple-700 transition">Buka Audio Sumber</a>
                     </div>
-
-                    <div class="space-y-6">
-                        <div class="bg-slate-50 rounded-xl p-5 border border-slate-100" id="listening-u5">
-                            <h4 class="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2"><i class="ph ph-microphone-stage"></i> Speaking & Listening Section</h4>
-                            <div class="text-center p-4 bg-white border border-slate-200 rounded-lg">
-                                <p class="text-sm text-slate-500 mb-3">Materi listening untuk unit ini tersedia di English-Practice.net.</p>
-                                <a href="https://english-practice.net/listening-exercises-a1-clothes/" target="_blank" class="inline-flex items-center gap-2 bg-slate-800 text-white px-4 py-2 rounded text-sm hover:bg-slate-700 transition">
-                                    <i class="ph ph-speaker-high"></i> Buka Audio Sumber
-                                </a>
-                            </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex-1">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center"><i class="ph ph-pencil-simple text-xl"></i></div>
+                            <h3 class="font-bold text-slate-800">Writing Task</h3>
                         </div>
-
-                        <div class="border-t border-slate-100 pt-6" id="writing-u5">
-                            <h4 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2"><i class="ph ph-pencil-line"></i> Writing Tasks (Tugas)</h4>
-                            <div class="bg-orange-50 border border-orange-100 rounded-lg p-4 flex items-center gap-4 mb-4 hover:bg-orange-100 transition-colors">
-                                <div class="bg-white p-2 rounded-full shadow-sm text-orange-600"><i class="ph ph-clipboard-text text-2xl"></i></div>
-                                <div>
-                                    <p class="text-sm font-bold text-slate-800">File Soal / Tugas Unit 5</p>
-                                    <a href="https://docs.google.com/document/d/1LMOuExvoMCasdGIPGSLcVDNesaXwk0qz2s7p4qXPCkM/edit?usp=drivesdk" target="_blank" class="text-xs text-blue-600 hover:underline flex items-center gap-1">Buka File Tugas <i class="ph ph-arrow-right"></i></a>
-                                </div>
-                            </div>
-                            <a href="https://wa.me/?text=Assalamualaikum%20Pak%2C%20berikut%20jawaban%20Unit%205%20saya.%0ANama%3A%20...%0ANIM%3A%20...%0A%0A(Tulis%20Jawaban%20Disini)" target="_blank" class="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium px-4 py-3 rounded-lg w-full transition-all shadow-sm">
-                                <i class="ph ph-whatsapp-logo text-xl"></i> Kirim Jawaban via WhatsApp
-                            </a>
+                        <div class="space-y-3">
+                            <a href="https://docs.google.com/document/d/1LMOuExvoMCasdGIPGSLcVDNesaXwk0qz2s7p4qXPCkM/edit?usp=drivesdk" target="_blank" class="flex items-center justify-center gap-2 w-full border border-slate-300 text-slate-600 py-3 rounded-lg text-sm hover:bg-slate-50 transition"><i class="ph ph-file-text"></i> Lihat Soal</a>
+                            <a href="https://wa.me/?text=Assalamualaikum%20Pak%2C%20berikut%20jawaban%20Unit%205%20saya.%0ANama%3A%20...%0ANIM%3A%20...%0A%0A(Tulis%20Jawaban%20Disini)" target="_blank" class="flex items-center justify-center gap-2 w-full bg-green-500 text-white py-3 rounded-lg text-sm hover:bg-green-600 transition shadow-sm"><i class="ph ph-whatsapp-logo text-lg"></i> Kirim Jawaban</a>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+        
+        <div class="mt-12 text-center text-slate-400 text-sm pb-6">
+            © 2026 General English Module Team
         </div>
 
     </main>
 
     <script>
         function switchTab(tabId) {
-            // Hide all tab contents
+            // 1. Sembunyikan semua konten
             const contents = document.querySelectorAll('.tab-content');
             contents.forEach(content => content.classList.add('hidden'));
 
-            // Deactivate all nav buttons
-            const navButtons = document.querySelectorAll('.nav-item');
+            // 2. Nonaktifkan semua tombol (hapus class active)
+            const navButtons = document.querySelectorAll('.nav-card');
             navButtons.forEach(btn => btn.classList.remove('active'));
 
-            // Show selected content
+            // 3. Tampilkan konten yang dipilih
             const selectedContent = document.getElementById(tabId);
-            if (selectedContent) selectedContent.classList.remove('hidden');
-
-            // Activate selected button
-            const activeBtn = document.getElementById('btn-' + tabId);
-            if (activeBtn) activeBtn.classList.add('active');
-
-            // Close mobile menu if open
-            if (window.innerWidth < 768) {
-                document.getElementById('mobile-nav').classList.add('hidden');
+            if (selectedContent) {
+                selectedContent.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
-        }
 
-        function jumpTo(tabId, elementId) {
-            // 1. Switch to the target tab (e.g., unit1)
-            switchTab(tabId);
-            
-            // 2. Wait a moment for the hidden tab to become visible, then scroll
-            setTimeout(() => {
-                const element = document.getElementById(elementId);
-                if(element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    // Optional: Highlight the section briefly
-                    element.classList.add('ring-2', 'ring-blue-300', 'ring-offset-2');
-                    setTimeout(() => element.classList.remove('ring-2', 'ring-blue-300', 'ring-offset-2'), 2000);
-                }
-            }, 100);
+            // 4. Aktifkan tombol yang dipilih
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+                
+                // Auto-scroll menu tab agar tombol aktif selalu terlihat di layar HP
+                const container = document.getElementById('tab-container');
+                const scrollLeft = activeBtn.offsetLeft - (container.clientWidth / 2) + (activeBtn.clientWidth / 2);
+                container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+            }
         }
     </script>
 </body>
-</html>        
+</html>
